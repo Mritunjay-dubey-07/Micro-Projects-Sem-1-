@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>Baddie Bank</title>
+  <link href="style.css" rel="stylesheet" type="text/css" />
+  
+  <style>
+    /* Styling for the logo's anchor tag */
+    .logo a {
+      /* Removes the underline from the link */
+      text-decoration: none;
+      /* Sets the color of the link text */
+      color: #3781C2;
+	  /*Enlarges the font size*/
+	  font-size: 2em;
+	  /*Creates space around the text*/
+	  padding: 10px;
+    }
+
+	/* Styling for the logo's anchor tag on hover */
+	.logo a:hover {
+		/* Changes the color of the link text to dark blue on hover */
+		color: darkblue;
+	}
+
+	/* Styling for the logo's anchor tag when active (clicked) */
+	.logo a:active {
+		/* Changes the color of the link text to black when the link is clicked */
+		color: black;
+	}
+    
+    /* Style the header */
+    header {
+      background-color: #f2f2f2;
+      /* Light grey background */
+      padding: 20px;
+      /* Padding around the content */
+      text-align: center;
+      /* Center the text */
+      border-bottom: 2px solid #ddd;
+      /* Light grey border at the bottom */
+    }
+
+    /* Style the navigation bar */
+    nav {
+      background-color: #333;
+      /* Dark grey background */
+      overflow: hidden;
+      /* Hide overflow if the content is larger than the container */
+    }
+
+    /* Style the navigation links */
+    nav a {
+      float: left;
+      /* Float links to the left to make them appear horizontally */
+      display: block;
+      /* Display as block elements */
+      color: white;
+      /* White text color */
+      text-align: center;
+      /* Center the text */
+      padding: 14px 16px;
+      /* Padding around the links */
+      text-decoration: none;
+      /* Remove underlines */
+    }
+
+    /* Change the color of links on hover */
+    nav a:hover {
+      background-color: #ddd;
+      /* Light grey background on hover */
+      color: black;
+      /* Black text color on hover */
+    }
+    
+    #login {
+      width: 300px;
+      /* Set a specific width for the login section */
+      margin: 50px auto;
+      /* Center the login section horizontally and add some top margin */
+      padding: 20px;
+      /* Add padding around the content */
+      border: 1px solid #ccc;
+      /* Add a light grey border */
+      border-radius: 5px;
+      /* Round the corners */
+      text-align: center;
+      /* Center the text inside the section */
+    }
+
+    #login label {
+      font-weight: bold;
+      /* Make the labels bold */
+	  color: #3781C2;
+      /* Sets the color of the link text */
+    }
+
+    .input-group {
+      margin-bottom: 10px;
+      /* Add some space between the input groups */
+    }
+    
+    #additional-options {
+      width: 300px;
+      /* Set a specific width for the login section */
+      margin: 50px auto;
+      /* Center the login section horizontally and add some top margin */
+      padding: 20px;
+      /* Add padding around the content */
+      text-align: center;
+      /* Center the text inside the section */
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <logo>
+      <div class="logo">
+        <!-- Logo container: Contains the Baddie Bank text -->
+        <a href="index.html">
+          <!-- Anchor tag: Makes the logo clickable and links it to the main page (index.html) -->
+          <b>
+            <!-- Bold tag: Makes the "Baddie Bank" text bold -->
+            Bank of Diddy Oil
+          </b>
+          <!-- End of bold tag -->
+        </a>
+        <!-- End of anchor tag -->
+      </div>
+      <!-- End of logo container -->
+    </logo>
+  </header>
+  <main class="log-box">
+    
+    <section id="login">
+      <h2>Login</h2>
+      <form id="login-form">
+        <div class="input-group">
+          <label for="username">Username:</label>
+          <input type="text" id="username" name="username" required>
+        </div>
+        <div class="input-group">
+          <label for="password">Password:</label>
+          <input type="password" id="password" name="password" required>
+        </div>
+        <button type="submit">Login</button>
+      </form>
+    </section>
+    
+    <section id="additional-options">
+      <button>Sign-up</button>
+      <button>Forgot Password</button>
+    </section>
+    
+
+  </main>
+
+</body>
+
+</html>
