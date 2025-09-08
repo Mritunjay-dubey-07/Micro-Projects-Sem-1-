@@ -1,1 +1,95 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="style.css" rel="stylesheet" type="text/css" />
+  <script src="script.js" defer></script>
+  <title>Bank of Diddy - Sign Up</title>
+</head>
+<body>
+  <div class="background-blur"></div>
+
+  <header>
+    <div class="logo">
+      <a href="index.html">
+        <span class="logo-text">Bank of Diddy </span>
+      </a>
+    </div>
+  </header>
+
+  <main class="main-container">
+    <div class="login-container">
+      <div class="glass-card">
+        <h2>Create Account</h2>
+        <p class="subtitle">Join Bank of Diddy today</p>
+
+        <form id="signup-form">
+          <div class="input-group">
+            <label for="account-number">Account Number</label>
+            <input type="text" id="account-number" name="account-number" required pattern="[0-9]{10,12}" placeholder="10-12 digit account number">
+            <div class="input-underline"></div>
+          </div>
+
+          <div class="input-group">
+            <label for="ifsc-code">IFSC Code</label>
+            <input type="text" id="ifsc-code" name="ifsc-code" required pattern="[A-Z]{4}[0-9]{7}" placeholder="e.g., BODD0000001" maxlength="11">
+            <div class="input-underline"></div>
+          </div>
+
+          <div class="input-group">
+            <label for="fullname">Full Name</label>
+            <input type="text" id="fullname" name="fullname" required>
+            <div class="input-underline"></div>
+          </div>
+
+          <div class="input-group">
+            <label for="email">Email Address</label>
+            <input type="email" id="email" name="email" required>
+            <div class="input-underline"></div>
+          </div>
+
+          <div class="input-group">
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" required>
+            <div class="input-underline"></div>
+          </div>
+
+          <div class="input-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required>
+            <div class="input-underline"></div>
+          </div>
+
+          <div class="input-group">
+            <label for="confirm-password">Confirm Password</label>
+            <input type="password" id="confirm-password" name="confirm-password" required>
+            <div class="input-underline"></div>
+          </div>
+
+          <button type="submit" class="primary-btn signup-submit-btn">
+            <span class="btn-text">Create Account</span>
+            <div class="btn-glow"></div>
+          </button>
+        </form>
+
+        <div class="additional-options">
+          <button class="secondary-btn back-to-login-btn">
+            <span class="btn-text">Back to Login</span>
+            <div class="btn-glow"></div>
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <div class="floating-elements">
+    <div class="floating-circle circle-1"></div>
+    <div class="floating-circle circle-2"></div>
+    <div class="floating-circle circle-3"></div>
+  </div>
+</body>
+</html>
+
