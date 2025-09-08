@@ -89,29 +89,32 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // Enhanced input focus effects
-    [usernameInput, passwordInput].forEach(input => {
-        input.addEventListener('focus', function() {
-            this.parentElement.style.transform = 'scale(1.02)';
-            this.parentElement.classList.add('input-focus-glow');
+    // Enhanced input focus effects for login form
+    if (usernameInput && passwordInput) {
+        [usernameInput, passwordInput].forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.style.transform = 'scale(1.02)';
+                this.parentElement.classList.add('input-focus-glow');
+            });
+            
+            input.addEventListener('blur', function() {
+                this.parentElement.style.transform = 'scale(1)';
+                this.parentElement.classList.remove('input-focus-glow');
+            });
+            
+            // Add typing animation
+            input.addEventListener('input', function() {
+                this.style.transform = 'scale(1.01)';
+                setTimeout(() => {
+                    this.style.transform = 'scale(1)';
+                }, 100);
+            });
         });
-        
-        input.addEventListener('blur', function() {
-            this.parentElement.style.transform = 'scale(1)';
-            this.parentElement.classList.remove('input-focus-glow');
-        });
-        
-        // Add typing animation
-        input.addEventListener('input', function() {
-            this.style.transform = 'scale(1.01)';
-            setTimeout(() => {
-                this.style.transform = 'scale(1)';
-            }, 100);
-        });
-    });
+    }
     
     // Form submission handling
-    loginForm.addEventListener('submit', function(e) {
+    if (loginForm) {
+        loginForm.addEventListener('submit', function(e) {
         e.preventDefault();
         
         const username = usernameInput.value.trim();
@@ -160,16 +163,157 @@ document.addEventListener('DOMContentLoaded', function() {
                 loginForm.reset();
             }, 1000);
         }, 1500);
-    });
+        });
+    }
     
-    // Handle other buttons
-    document.querySelector('.signup-btn').addEventListener('click', function() {
-        alert('Sign-up functionality coming soon!');
-    });
+    // Handle other buttons - only if they exist
+    const signupBtn = document.querySelector('.signup-btn');
+    if (signupBtn) {
+        signupBtn.addEventListener('click', function() {
+            window.location.href = 'signup.html';
+        });
+    }
     
-    document.querySelector('.forgot-btn').addEventListener('click', function() {
-        alert('Password reset link will be sent to your email.');
-    });
+    const forgotBtn = document.querySelector('.forgot-btn');
+    if (forgotBtn) {
+        forgotBtn.addEventListener('click', function() {
+            alert('Password reset link will be sent to your email.');
+        });
+    }
+
+    // Handle signup form if on signup page
+    const signupForm = document.getElementById('signup-form');
+    if (signupForm) {
+        const accountNumberInput = document.getElementById('account-number');
+        const ifscCodeInput = document.getElementById('ifsc-code');
+        const fullnameInput = document.getElementById('fullname');
+        const emailInput = document.getElementById('email');
+        const signupUsernameInput = document.getElementById('username');
+        const signupPasswordInput = document.getElementById('password');
+        const confirmPasswordInput = document.getElementById('confirm-password');
+        
+        // Add focus effects to all signup inputs
+        [accountNumberInput, ifscCodeInput, fullnameInput, emailInput, signupUsernameInput, signupPasswordInput, confirmPasswordInput].forEach(input => {
+            if (input) {
+                input.addEventListener('focus', function() {
+                    this.parentElement.style.transform = 'scale(1.02)';
+                    this.parentElement.classList.add('input-focus-glow');
+                });
+                
+                input.addEventListener('blur', function() {
+                    this.parentElement.style.transform = 'scale(1)';
+                    this.parentElement.classList.remove('input-focus-glow');
+                });
+                
+                input.addEventListener('input', function() {
+                    this.style.transform = 'scale(1.01)';
+                    setTimeout(() => {
+                        this.style.transform = 'scale(1)';
+                    }, 100);
+                });
+            }
+        });
+
+        // Add ripple effects to signup form buttons
+        const signupBtns = signupForm.querySelectorAll('.primary-btn, .secondary-btn');
+        signupBtns.forEach(button => {
+            button.addEventListener('click', createRipple);
+            
+            button.addEventListener('mousedown', function() {
+                this.classList.add('btn-click-animation');
+            });
+            
+            button.addEventListener('animationend', function() {
+                this.classList.remove('btn-click-animation');
+            });
+        });
+
+        signupForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const accountNumber = accountNumberInput.value.trim();
+            const ifscCode = ifscCodeInput.value.trim().toUpperCase();
+            const fullname = fullnameInput.value.trim();
+            const email = emailInput.value.trim();
+            const username = signupUsernameInput.value.trim();
+            const password = signupPasswordInput.value.trim();
+            const confirmPassword = confirmPasswordInput.value.trim();
+            
+            // Validation
+            if (!accountNumber || !ifscCode || !fullname || !email || !username || !password || !confirmPassword) {
+                alert('Please fill in all fields.');
+                // Add shake effect to empty fields
+                if (!accountNumber) accountNumberInput.parentElement.classList.add('shake');
+                if (!ifscCode) ifscCodeInput.parentElement.classList.add('shake');
+                if (!fullname) fullnameInput.parentElement.classList.add('shake');
+                if (!email) emailInput.parentElement.classList.add('shake');
+                if (!username) signupUsernameInput.parentElement.classList.add('shake');
+                if (!password) signupPasswordInput.parentElement.classList.add('shake');
+                if (!confirmPassword) confirmPasswordInput.parentElement.classList.add('shake');
+                
+                setTimeout(() => {
+                    [accountNumberInput, ifscCodeInput, fullnameInput, emailInput, signupUsernameInput, signupPasswordInput, confirmPasswordInput].forEach(input => {
+                        if (input) input.parentElement.classList.remove('shake');
+                    });
+                }, 500);
+                return;
+            }
+            
+            // Validate account number format (10-12 digits)
+            if (!/^[0-9]{10,12}$/.test(accountNumber)) {
+                alert('Account number must be 10-12 digits long.');
+                accountNumberInput.parentElement.classList.add('shake');
+                setTimeout(() => {
+                    accountNumberInput.parentElement.classList.remove('shake');
+                }, 500);
+                return;
+            }
+            
+            // Validate IFSC code format (4 letters + 7 digits)
+            if (!/^[A-Z]{4}[0-9]{7}$/.test(ifscCode)) {
+                alert('IFSC code must be in format: 4 letters followed by 7 digits (e.g., BODD0000001).');
+                ifscCodeInput.parentElement.classList.add('shake');
+                setTimeout(() => {
+                    ifscCodeInput.parentElement.classList.remove('shake');
+                }, 500);
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                alert('Passwords do not match.');
+                confirmPasswordInput.parentElement.classList.add('shake');
+                setTimeout(() => {
+                    confirmPasswordInput.parentElement.classList.remove('shake');
+                }, 500);
+                return;
+            }
+            
+            // Simulate signup process
+            const signupSubmitBtn = document.querySelector('.signup-submit-btn');
+            const originalText = signupSubmitBtn.querySelector('.btn-text').textContent;
+            
+            signupSubmitBtn.querySelector('.btn-text').textContent = 'Creating Account...';
+            signupSubmitBtn.style.background = 'linear-gradient(135deg, #28a745, #20c997)';
+            signupSubmitBtn.disabled = true;
+            
+            setTimeout(() => {
+                signupSubmitBtn.querySelector('.btn-text').textContent = '✓ Account Created!';
+                
+                setTimeout(() => {
+                    alert(`Welcome to Bank of Diddy Oil, ${fullname}! Your account has been created successfully.`);
+                    window.location.href = 'index.html';
+                }, 1000);
+            }, 1500);
+        });
+    }
+
+    // Handle back to login button
+    const backToLoginBtn = document.querySelector('.back-to-login-btn');
+    if (backToLoginBtn) {
+        backToLoginBtn.addEventListener('click', function() {
+            window.location.href = 'index.html';
+        });
+    }
     
     // Add smooth scrolling and parallax effect
     window.addEventListener('scroll', function() {
@@ -212,3 +356,4 @@ document.addEventListener('DOMContentLoaded', function() {
     
     console.log('🏦 Bank of Diddy Oil - Advanced UI Loaded Successfully!');
 });
+
