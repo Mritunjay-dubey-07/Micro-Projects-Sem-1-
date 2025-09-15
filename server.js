@@ -23,8 +23,8 @@ app.post('/signup', (req, res) => {
 
     const executablePath = path.join(__dirname, 'database'); // Assumes compiled C++ is named 'database'
 
-    // Execute the compiled C++ program
-    execFile(executablePath, [accountNumber, ifscCode, fullname, email, username, password], (error, stdout, stderr) => {
+    // Execute the compiled C++ program for registration
+    execFile(executablePath, ['register', accountNumber, ifscCode, fullname, email, username, password], (error, stdout, stderr) => {
         if (error) {
             console.error(`execFile error: ${error}`);
             return res.status(500).json({ success: false, message: 'Server error occurred.' });
@@ -33,6 +33,29 @@ app.post('/signup', (req, res) => {
         const result = stdout.trim();
         if (result.startsWith('SUCCESS')) {
             res.json({ success: true, message: 'Account created successfully!' });
+        } else {
+            // Send back the specific error message from the C++ program
+            res.status(400).json({ success: false, message: result.replace('ERROR: ', '') });
+        }
+    });
+});
+
+// Handle login form submission
+app.post('/login', (req, res) => {
+    const { username, password } = req.body;
+
+    const executablePath = path.join(__dirname, 'database');
+
+    // Execute the compiled C++ program for login
+    execFile(executablePath, ['login', username, password], (error, stdout, stderr) => {
+        if (error) {
+            console.error(`execFile error: ${error}`);
+            return res.status(500).json({ success: false, message: 'Server error occurred.' });
+        }
+        
+        const result = stdout.trim();
+        if (result.startsWith('SUCCESS')) {
+            res.json({ success: true, message: 'Login successful!' });
         } else {
             // Send back the specific error message from the C++ program
             res.status(400).json({ success: false, message: result.replace('ERROR: ', '') });
