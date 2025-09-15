@@ -2,7 +2,6 @@
 document.addEventListener('DOMContentLoaded', function() {
     
     // Get all interactive elements
-    const loginForm = document.getElementById('login-form');
     const usernameInput = document.getElementById('username');
     const passwordInput = document.getElementById('password');
     const primaryBtns = document.querySelectorAll('.primary-btn');
@@ -83,6 +82,105 @@ document.addEventListener('DOMContentLoaded', function() {
         fullnameInput.addEventListener('input', generateUsername);
     }
 
+    // Function to show success message
+    function showSuccessMessage() {
+        // Create success message overlay
+        const successOverlay = document.createElement('div');
+        successOverlay.className = 'success-overlay';
+        successOverlay.innerHTML = `
+            <div class="glass-card success-card">
+                <h2>✓ Account Creation Successful</h2>
+                <p>Your account has been created successfully!</p>
+                <p>Redirecting to login page...</p>
+            </div>
+        `;
+        successOverlay.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+        `;
+        document.body.appendChild(successOverlay);
+    }
+
+    // Function to show error message with timer
+    function showErrorMessage(message, countdown = 3) {
+        // Create error message overlay
+        const errorOverlay = document.createElement('div');
+        errorOverlay.className = 'error-overlay';
+        errorOverlay.innerHTML = `
+            <div class="glass-card error-card">
+                <h2>❌ ${message}</h2>
+                <p>Page will refresh in <span id="countdown">${countdown}</span> seconds...</p>
+            </div>
+        `;
+        errorOverlay.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+        `;
+        document.body.appendChild(errorOverlay);
+
+        // Start countdown timer
+        const countdownElement = document.getElementById('countdown');
+        let timeLeft = countdown;
+        const timer = setInterval(() => {
+            timeLeft--;
+            countdownElement.textContent = timeLeft;
+            if (timeLeft <= 0) {
+                clearInterval(timer);
+                window.location.reload();
+            }
+        }, 1000);
+    }
+
+    // Handle login form submission
+    const loginForm = document.getElementById('login-form');
+    if (loginForm) {
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData.entries());
+            
+            // Send login request to server
+            fetch('/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    // Successful login - redirect to app.html
+                    window.location.href = 'app.html';
+                } else {
+                    // Show error message with timer
+                    showErrorMessage(result.message, 3);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showErrorMessage('An unexpected error occurred', 3);
+            });
+        });
+    }
+
     // Handle signup form if on signup page
     const signupForm = document.getElementById('signup-form');
     if (signupForm) {
@@ -113,10 +211,13 @@ document.addEventListener('DOMContentLoaded', function() {
                     signupSubmitBtn.querySelector('.btn-text').textContent = '✓ Account Created!';
                     signupSubmitBtn.style.background = 'linear-gradient(135deg, #28a745, #20c997)';
                     
+                    // Create and show success message
+                    showSuccessMessage();
+                    
+                    // Redirect after 3 seconds
                     setTimeout(() => {
-                        alert(`Welcome to Bank of Diddy, ${data.fullname}! Your account has been created successfully.`);
                         window.location.href = 'index.html';
-                    }, 1000);
+                    }, 3000);
 
                 } else {
                     // Show error message from server
@@ -168,4 +269,13 @@ document.addEventListener('DOMContentLoaded', function() {
     textBtns.forEach(btn => {
         btn.addEventListener('click', createRipple);
     });
+
+    // Handle logout button (on app.html)
+    const logoutBtn = document.querySelector('.logout-btn');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            window.location.href = 'index.html';
+        });
+    }
 });
