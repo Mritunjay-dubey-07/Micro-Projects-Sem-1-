@@ -51,6 +51,38 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // ... (rest of your existing UI enhancement code) ...
     
+    // Auto-fill username on signup page
+    const accountNumberInput = document.getElementById('account-number');
+    const fullnameInput = document.getElementById('fullname');
+    const usernameInputSignup = document.getElementById('username');
+    
+    function generateUsername() {
+        const accountNumber = accountNumberInput ? accountNumberInput.value.trim() : '';
+        const fullname = fullnameInput ? fullnameInput.value.trim() : '';
+        
+        if (accountNumber.length >= 4 && fullname.length >= 4) {
+            // Get first 2 letters of name
+            const firstTwo = fullname.substring(0, 2);
+            // Get last 2 letters of name
+            const lastTwo = fullname.substring(fullname.length - 2);
+            // Get last 4 digits of account number
+            const lastFourDigits = accountNumber.substring(accountNumber.length - 4);
+            
+            // Combine them: first2 + last2 + last4digits
+            const generatedUsername = firstTwo + lastTwo + lastFourDigits;
+            
+            if (usernameInputSignup) {
+                usernameInputSignup.value = generatedUsername;
+            }
+        }
+    }
+    
+    // Add event listeners for auto-generation
+    if (accountNumberInput && fullnameInput && usernameInputSignup) {
+        accountNumberInput.addEventListener('input', generateUsername);
+        fullnameInput.addEventListener('input', generateUsername);
+    }
+
     // Handle signup form if on signup page
     const signupForm = document.getElementById('signup-form');
     if (signupForm) {
@@ -104,5 +136,36 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // ... (rest of your existing button handlers and UI effects) ...
+    // Navigation event handlers
+    const signupBtn = document.querySelector('.signup-btn');
+    const backToLoginBtn = document.querySelector('.back-to-login-btn');
+    
+    // Handle "Create Account" button click (on login page)
+    if (signupBtn) {
+        signupBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            window.location.href = 'signup.html';
+        });
+    }
+    
+    // Handle "Back to Login" button click (on signup page)
+    if (backToLoginBtn) {
+        backToLoginBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            window.location.href = 'index.html';
+        });
+    }
+    
+    // Add ripple effect to all buttons
+    primaryBtns.forEach(btn => {
+        btn.addEventListener('click', createRipple);
+    });
+    
+    secondaryBtns.forEach(btn => {
+        btn.addEventListener('click', createRipple);
+    });
+    
+    textBtns.forEach(btn => {
+        btn.addEventListener('click', createRipple);
+    });
 });
