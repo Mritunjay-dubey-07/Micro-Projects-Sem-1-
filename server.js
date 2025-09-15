@@ -2,10 +2,10 @@ const express = require('express');
 const { execFile } = require('child_process');
 const path = require('path');
 const app = express();
-const port = 3000;
+const port = 5000;
 
-// Serve static files (HTML, CSS, client-side JS)
-app.use(express.static(__dirname));
+// Serve static files from public directory only (security)
+app.use(express.static(path.join(__dirname, 'public')));
 // Middleware to parse JSON and URL-encoded data
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -40,7 +40,7 @@ app.post('/signup', (req, res) => {
     });
 });
 
-app.listen(port, () => {
-    console.log(`Server running at http://localhost:${port}`);
-    console.log('Serving files from:', __dirname);
+app.listen(port, '0.0.0.0', () => {
+    console.log(`Server running at http://0.0.0.0:${port}`);
+    console.log('Serving files from:', path.join(__dirname, 'public'));
 });
