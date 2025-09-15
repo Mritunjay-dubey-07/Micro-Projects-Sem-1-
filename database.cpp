@@ -83,7 +83,7 @@ public:
     }
 
     ~BankDatabase() {
-        saveDatabase();
+        // Database saves are handled explicitly where needed
     }
 
     void initializeIFSCCodes() {
@@ -177,6 +177,12 @@ public:
         EMPTY_FIELDS
     };
 
+    enum class LoginResult {
+        SUCCESS,
+        INVALID_CREDENTIALS,
+        EMPTY_FIELDS
+    };
+
     RegistrationResult registerUser(const std::string& accountNumber,
                                   const std::string& ifscCode,
                                   const std::string& fullName,
@@ -225,6 +231,20 @@ public:
         return RegistrationResult::SUCCESS;
     }
 
+    LoginResult verifyLogin(const std::string& username, const std::string& password) {
+        if (username.empty() || password.empty()) {
+            return LoginResult::EMPTY_FIELDS;
+        }
+
+        for (const auto& user : users) {
+            if (user.username == username && user.password == password && user.isActive) {
+                return LoginResult::SUCCESS;
+            }
+        }
+        
+        return LoginResult::INVALID_CREDENTIALS;
+    }
+
     void saveDatabase() {
         std::ofstream file(DATABASE_FILE, std::ios_base::app); // Append to the file
         if (file.is_open()) {
@@ -270,30 +290,66 @@ public:
                 return "ERROR: Unknown error occurred.";
         }
     }
+
+    std::string getLoginResultMessage(LoginResult result) {
+        switch (result) {
+            case LoginResult::SUCCESS:
+                return "SUCCESS";
+            case LoginResult::INVALID_CREDENTIALS:
+                return "ERROR: Credentials not correct";
+            case LoginResult::EMPTY_FIELDS:
+                return "ERROR: Username and password are required.";
+            default:
+                return "ERROR: Unknown error occurred.";
+        }
+    }
 };
 
 // Main function now accepts command line arguments
 int main(int argc, char* argv[]) {
-    if (argc != 7) {
-        // Not enough arguments passed
+    if (argc < 2) {
         std::cout << "ERROR: Invalid number of arguments." << std::endl;
         return 1;
     }
 
     BankDatabase db;
+    std::string operation = argv[1];
     
-    std::string accountNumber = argv[1];
-    std::string ifscCode = argv[2];
-    std::string fullName = argv[3];
-    std::string email = argv[4];
-    std::string username = argv[5];
-    std::string password = argv[6];
+    if (operation == "register") {
+        if (argc != 8) {
+            std::cout << "ERROR: Registration requires 6 arguments." << std::endl;
+            return 1;
+        }
+        
+        std::string accountNumber = argv[2];
+        std::string ifscCode = argv[3];
+        std::string fullName = argv[4];
+        std::string email = argv[5];
+        std::string username = argv[6];
+        std::string password = argv[7];
 
-    auto result = db.registerUser(accountNumber, ifscCode, fullName, email, username, password);
-    std::cout << db.getRegistrationResultMessage(result) << std::endl;
+        auto result = db.registerUser(accountNumber, ifscCode, fullName, email, username, password);
+        std::cout << db.getRegistrationResultMessage(result) << std::endl;
 
-    if (result == BankDatabase::RegistrationResult::SUCCESS) {
-        db.saveDatabase();
+        if (result == BankDatabase::RegistrationResult::SUCCESS) {
+            db.saveDatabase();
+        }
+    }
+    else if (operation == "login") {
+        if (argc != 4) {
+            std::cout << "ERROR: Login requires 2 arguments." << std::endl;
+            return 1;
+        }
+        
+        std::string username = argv[2];
+        std::string password = argv[3];
+
+        auto result = db.verifyLogin(username, password);
+        std::cout << db.getLoginResultMessage(result) << std::endl;
+    }
+    else {
+        std::cout << "ERROR: Unknown operation. Use 'register' or 'login'." << std::endl;
+        return 1;
     }
 
     return 0;
